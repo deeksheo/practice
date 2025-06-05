@@ -1,0 +1,53 @@
+1. cd Documents
+2. gedit hosts.ini
+3. Inside hosts.ini Type the following:
+\\
+[local]
+localhost ansible_connection=local
+\\
+4. run The following to check inventory connectivity:
+> ansible all -i hosts.ini --list-hosts
+> ansible all -i hosts.ini -m ping
+5. gedit playbook.yml type the following
+\\ 
+- name: My first Playbook
+  hosts: local
+  connection: local
+  tasks:
+   - name: My First Task
+     debug:
+      msg: "Ansible is a configuration management tool"
+6.ansible-playbook -i hosts.ini playbook.yml
+
+STEPS TO CREATE MODULE:
+1. mkdir -p library
+2. cd library
+3. gedit hello_world.py (Python file)
+4. hello_world.py:
+from ansible.module_util.basic import AnsibleModule
+
+def run_module():
+module_args=dict(name=dict(type='str',required=True))
+module=AnsibleModule(argument_spec=module_args)
+result={"changed":False,"message":f"Hello,{module.params['name']}!"}
+module.exit_json(**result)
+
+if __name__:'__main__':
+run_module()
+5. cd ..
+6. chmod +x library/hello_world.py
+7. gedit playbook.yml
+8. Code:
+---
+- name: Test Custom Module
+  hosts: localhost
+  gather_facts: no
+  tasks:
+   - name: Say hello
+     hello_world:
+      name: "Ansible"
+     register: result
+   - name: Show message
+     debug:
+        msg: "{{ result.message }}"
+9. ansible-playbook -i hosts.ini playbook.yml
