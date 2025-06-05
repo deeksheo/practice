@@ -1,0 +1,54 @@
+# the git commands:
+> git
+> git config --global user.email "deekshasheorann@gmail.com"
+> git congig --global user.name "deeksheo"
+
+# creation of ssh Key:
+> ssh-keygen -t ed25519 -C "deekshasheorann@gmail.com"
+> cat /home/student/.ssh/id_ed25519.pub
+
+# git commands  to push file and point to you repository:
+> git init
+> git add pom.xml
+> git add src
+> git remote add origin git@github.com:deeksheo/devops06
+> git config --global push.autoSetupRemote true
+> git branch -M main
+> git push origin main
+# if there is error:
+  > git pull --rebase origin main 
+  > git push origin main
+# Start jenkin login 
+> sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+# Create new item copy paste pipeline code
+
+THIS PIPELINE CODE:
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('Checkout')
+        {
+            steps
+            {
+                git branch:'main',url:'https://github.com/AnnaBinoy09/demo_devops.git';// change to your repository path
+            }
+        }
+        stage('Build')
+        {
+            steps
+            {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Test')
+        {
+            steps
+            {
+                sh 'mvn test'
+            }
+        }
+        
+    }
+}
